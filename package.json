@@ -26,5 +26,8 @@
     "express": "^4.12.3",
     "pg": "^4.3.0",
     "sequelize": "^2.1.0"
+  },
+  "devDependencies": {
+    "morgan": "^1.5.2"
   }
 }

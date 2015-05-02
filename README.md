@@ -12,7 +12,7 @@ npm start
 
 ##API Components
 
-  -PostgreSQL
-  -Express
-  -Node.js
-  -Sequelize
+-PostgreSQL
+-Express
+-Node.js
+-Sequelize
