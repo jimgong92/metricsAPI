@@ -28,7 +28,7 @@ function populate(sql){
     "end_date"
   ];
   var toBaseLen = '/server/controllers'.length;
-  var csvPath = '/data/metrics_over_time_view.csv';
+  var csvPath = '/data/metrics.csv';
   csvPath = __dirname.slice(0, __dirname.length - toBaseLen)  + csvPath;
   var queryString = "COPY metrics (" + columns.join(", ") + ") FROM '" + csvPath + "' DELIMITER ',' CSV HEADER";
   sql.query(queryString);
