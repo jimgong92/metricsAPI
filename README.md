@@ -5,6 +5,7 @@ RESTful API to query metrics dataset with dynamic query strings.
 
 ###Installing Dependencies
 - Install [Postgres.app](http://postgresapp.com/)
+- Run Postgres.app
 ```
 npm install
 npm start
