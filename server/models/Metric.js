@@ -1,5 +1,7 @@
 var Sequelize = require('sequelize');
 var pgsql = require('../db');
+var populate = require('../controllers/db-helpers').init;
+
 
 var Metric = pgsql.define('metrics', {
   id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
@@ -15,7 +17,8 @@ var Metric = pgsql.define('metrics', {
 
 /**
  * Create table if doesn't exist
+ * Populate with csv data
  */
-Metric.sync();
+Metric.sync().done(populate);
 
 module.exports = Metric;
