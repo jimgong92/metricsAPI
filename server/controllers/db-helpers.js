@@ -1,5 +1,5 @@
 var pg = require('pg');
-
+var CSV_PATH = '/data/metrics.csv';
 /**
  * If database is empty, populate
  */
@@ -28,9 +28,8 @@ function populate(sql){
     "end_date"
   ];
   var toBaseLen = '/server/controllers'.length;
-  var csvPath = '/data/metrics.csv';
-  csvPath = __dirname.slice(0, __dirname.length - toBaseLen)  + csvPath;
-  var queryString = "COPY metrics (" + columns.join(", ") + ") FROM '" + csvPath + "' DELIMITER ',' CSV HEADER";
+  var fullPath = __dirname.slice(0, __dirname.length - toBaseLen)  + var fullPath;
+  var queryString = "COPY metrics (" + columns.join(", ") + ") FROM '" + var fullPath + "' DELIMITER ',' CSV HEADER";
   sql.query(queryString);
 }
 
