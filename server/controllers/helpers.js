@@ -17,7 +17,7 @@ function convertToJT(dateStr){
  */
 function convertFromJT(johnTime){
   johnTime = Number(johnTime);
-  var date = (johnTime * MS_PER_DAY + JT_VALUE).toISOString().slice(0, 10);
+  var date = new Date(johnTime * MS_PER_DAY + JT_VALUE).toISOString().slice(0, 10);
   return date;
 }
 

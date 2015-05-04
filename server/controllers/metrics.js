@@ -13,8 +13,7 @@ function queryDB(queryObj, res){
    */
   Metric.all(helpers.getQuery(queryObj))
     .then(function(results){
-      console.log(results);
-      res.sendStatus(200);
+      handleType(queryObj.type, results, res, queryObj.toCache);
     });
 }
 
