@@ -20,26 +20,36 @@ function queryDB(queryObj, res){
 function handleType(type, results, res, key){
   var count = getCount(results);
   if (count === 0) {
-    var value = 'No entries found.';
+    var value = JSON.stringify({
+      result: 'No entries found.'
+    });
     cache.set(key, value);
     return res.send(value);
   }
   res.statusCode = 200;
   switch (type){
     case 'instances':
-      var value = JSON.stringify(getInstances(results));
+      var value = JSON.stringify({
+        result: getInstances(results)
+      });
       cache.set(key, value);
       return res.send(value);
     case 'count':
-      var value = JSON.stringify(count);
+      var value = JSON.stringify({
+        result: count
+      });
       cache.set(key, value)
       return res.send(value);
     case 'sum':
-      var value = JSON.stringify(getSum(results));
+      var value = JSON.stringify({
+        result: getSum(results)
+      });
       cache.set(key, value);
       return res.send(value);
     case 'average':
-      var value = JSON.stringify(getSum(results) / count);
+      var value = JSON.stringify({
+        result: getSum(results) / count
+      });
       cache.set(key, value);
       return res.send(value);
     default: 
