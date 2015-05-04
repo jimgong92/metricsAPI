@@ -19,6 +19,6 @@ var Metric = pgsql.define('metrics', {
  * Create table if doesn't exist
  * Populate with csv data
  */
-Metric.sync().done(populate);
+Metric.sync({force: true}).done(populate);
 
 module.exports = Metric;
