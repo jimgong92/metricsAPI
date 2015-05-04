@@ -28,9 +28,10 @@ function populate(sql){
     "end_date"
   ];
   var toBaseLen = '/server/controllers'.length;
-  var fullPath = __dirname.slice(0, __dirname.length - toBaseLen)  + var fullPath;
-  var queryString = "COPY metrics (" + columns.join(", ") + ") FROM '" + var fullPath + "' DELIMITER ',' CSV HEADER";
+  var fullPath = __dirname.slice(0, __dirname.length - toBaseLen)  + CSV_PATH;
+  var queryString = "COPY metrics (" + columns.join(", ") + ") FROM '" + fullPath + "' DELIMITER ',' CSV HEADER";
   sql.query(queryString);
+  console.log("DATABASE POPULATED");
 }
 
 module.exports = {

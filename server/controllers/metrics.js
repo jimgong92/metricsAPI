@@ -5,6 +5,7 @@ var cache = require('../cache');
 
 function queryDB(queryObj, res){
   if (!helpers.isValid(queryObj)) {
+    res.statusCode = 404;
     return res.send('Query missing necessary information');
   }
   /**
@@ -13,9 +14,58 @@ function queryDB(queryObj, res){
   Metric.all(helpers.getQuery(queryObj))
     .then(function(results){
       console.log(results);
+      res.sendStatus(200);
     });
 }
 
+function handleType(type, results, res, key){
+  var count = getCount(results);
+  if (count === 0) {
+    var value = 'No entries found.';
+    cache.set(key, value);
+    return res.send(value);
+  }
+  res.statusCode = 200;
+  switch (type){
+    case 'instances':
+      var value = JSON.stringify(getInstances(results));
+      cache.set(key, value);
+      return res.send(value);
+    case 'count':
+      var value = JSON.stringify(count);
+      cache.set(key, value)
+      return res.send(value);
+    case 'sum':
+      var value = JSON.stringify(getSum(results));
+      cache.set(key, value);
+      return res.send(value);
+    case 'average':
+      var value = JSON.stringify(getSum(results) / count);
+      cache.set(key, value);
+      return res.send(value);
+    default: 
+      return res.sendStatus(404);
+  }
+}
+function getInstances(results){
+  var instances = [];
+  results.forEach(function(row){
+    instances.push({
+      value: row.value,
+      start_date: helpers.convertFromJT(row.start_date),
+      duration: row.time_range_length
+    });
+  });
+  return instances;
+}
+function getCount(results){
+  return results.length;
+}
+function getSum(results){
+  var sum = 0;
+  results.forEach(function(row){ sum += Number(row.value); });
+  return sum;
+}
 
 module.exports = {
   queryDB: queryDB

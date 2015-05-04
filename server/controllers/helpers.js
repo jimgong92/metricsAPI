@@ -1,6 +1,29 @@
 var MS_PER_DAY = 86400000;
 var JT_VALUE = new Date(2009,00,01).valueOf();
 
+/**
+ * @params: dateStr, String - ISO8601 date format 
+ * @return: johnTime, Number - JohnTime date format
+ */
+function convertToJT(dateStr){
+  var splitDate = dateStr.split('-');
+  var dateObj = new Date(splitDate[0], splitDate[1] - 1, splitDate[2]);
+  var johnTime = Math.floor((dateObj.valueOf() - JT_VALUE)/ MS_PER_DAY);
+  return johnTime;
+}
+/**
+ * @params: johnTime, Number - JohnTime date format
+ * @return: date, String - ISO8601 date format 
+ */
+function convertFromJT(johnTime){
+  johnTime = Number(johnTime);
+  var date = (johnTime * MS_PER_DAY + JT_VALUE).toISOString().slice(0, 10);
+  return date;
+}
+
+/**
+ * Gets valid sequelize query object
+ */
 function getQuery(queryObj){
   var where = {metric_id: queryObj.metric_id};
   var valueFilters = queryObj.filters.join('').match(/value/g);
@@ -9,9 +32,9 @@ function getQuery(queryObj){
     var between = [];
   }
   queryObj.filters.forEach(function(filter){
-    var memo = helpers.getFilterObj(filter);
+    var memo = getFilterObj(filter);
     if (memo.key === 'date'){
-      memo.value = helpers.convertToJT(memo.value);
+      memo.value = convertToJT(memo.value);
       if (memo.condition === '='){
         where['start_date'] = { gt: memo.value - 1 };
         where['end_date'] = { lt: memo.value + 1 };
@@ -34,7 +57,6 @@ function getQuery(queryObj){
   if (isBetweenValue) where['value'] = { between: between};
   return {where: where};
 }
-
 function getFilterObj(filterStr){
   var condition = filterStr.match(/[<=>]/)[0];
   var keyVal = filterStr.split(condition);
@@ -44,6 +66,17 @@ function getFilterObj(filterStr){
     value: keyVal[1]
   };
 }
+/**
+ * Query Validation
+ */
+function isValid(query){
+  return isNum(query.metric_id) 
+    && isValidType(query.type) 
+    && query.filters.reduce(function(isTrue, filter){
+      return isValidFilter(filter) && isTrue;
+    }, true);
+}
+
 function isNum(val){
   return !isNaN(Number(val));
 }
@@ -72,35 +105,10 @@ function isValidProp(key, val){
 function isValidCondition(condition){
   return condition === '<' || condition === '=' || condition === '>';
 }
-function isValid(query){
-  return isNum(query.metric_id) 
-    && isValidType(query.type) 
-    && query.filters.reduce(function(isTrue, filter){
-      return isValidFilter(filter) && isTrue;
-    }, true);
-}
 
 module.exports = {
-  /**
-   * @params: dateStr, String - ISO8601 date format 
-   * @return: johnTime, Number - JohnTime date format
-   */
-  convertToJT: function(dateStr){
-    var splitDate = dateStr.split('-');
-    var dateObj = new Date(splitDate[0], splitDate[1] - 1, splitDate[2]);
-    var johnTime = Math.floor((dateObj.valueOf() - JT_VALUE)/ MS_PER_DAY);
-    return johnTime;
-  },
-  /**
-   * @params: johnTime, Number - JohnTime date format
-   * @return: date, String - ISO8601 date format 
-   */
-  convertFromJT: function(johnTime){
-    johnTime = Number(johnTime);
-    var date = (johnTime * MS_PER_DAY + JT_VALUE).toISOString().slice(0, 10);
-    return date;
-  },
+  convertToJT: convertToJT,
+  convertFromJT: convertFromJT,
   isValid: isValid,
-  getFilterObj: getFilterObj,
   getQuery: getQuery
 }
